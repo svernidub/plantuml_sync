@@ -13,7 +13,7 @@ pub(super) fn encode(data: Vec<u8>) -> String {
     data.chunks(3).for_each(|bs| {
         bytes_to_chars(bs).map(|cs| {
             cs.iter().for_each(|ch| query.push(to_alphabet_char(*ch)))
-        });
+        }).unwrap();
     });
 
     query
