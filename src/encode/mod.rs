@@ -7,6 +7,5 @@ use encode::encode;
 
 
 pub fn get_uri(uml: String) -> io::Result<String> {
-    let res = deflate(uml)?;
-    Ok(encode(res))
+    deflate(uml).map(encode)
 }

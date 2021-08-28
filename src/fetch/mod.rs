@@ -8,20 +8,16 @@ pub enum Format {
     Latex
 }
 use Format::*;
-use reqwest::{Response, Error};
 use std::io::Read;
 
 pub(super) async fn fetch(encoded_diagram: String, format: Format) -> Result<Vec<u8>, io::Error> {
-    match make_request(uri(encoded_diagram, format)).await {
-        Ok(data) => Ok(data),
-        Err(e) => Err(io::Error::new(io::ErrorKind::ConnectionAborted, "something".to_string()))
-    }
+    make_request(uri(encoded_diagram, format)).await.map_err(|_| {
+         io::Error::new(io::ErrorKind::ConnectionAborted, "Connection issue".to_string())
+    })
 }
 
 async fn make_request(to_uri: String) -> Result<Vec<u8>, reqwest::Error> {
-    let  res = reqwest::get(to_uri).await?;
-    let bytes = res.bytes().await?;
-    Ok(bytes.to_vec())
+    Ok(reqwest::get(to_uri).await?.bytes().await?.to_vec())
 }
 
 fn format_uri(format: Format) -> String {

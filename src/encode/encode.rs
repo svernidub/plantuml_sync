@@ -11,11 +11,9 @@ pub(super) fn encode(data: Vec<u8>) -> String {
     let mut query = String::new();
 
     data.chunks(3).for_each(|bs| {
-        if let Ok(cs) = bytes_to_chars(bs) {
-            cs.iter().for_each(|ch| {
-                query.push(to_alphabet_char(*ch))
-            })
-        }
+        bytes_to_chars(bs).map(|cs| {
+            cs.iter().for_each(|ch| query.push(to_alphabet_char(*ch)))
+        });
     });
 
     query
@@ -23,7 +21,7 @@ pub(super) fn encode(data: Vec<u8>) -> String {
 
 fn to_alphabet_char(ch: u8) -> char {
     match ch {
-        0..=9   => format!("{}", ch).parse().unwrap(),
+        0 ..=9  => format!("{}", ch).parse().unwrap(),
         10..=35 => char::from('A' as u8 + ch - 10),
         36..=61 => char::from('a' as u8 + ch - 36),
         62      => '-',

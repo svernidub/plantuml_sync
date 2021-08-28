@@ -28,14 +28,12 @@ async fn main() -> io::Result<()> {
             single_file = false;
             sync = true;
         }
-        "--help" | "-h" => {
+        "-h" => {
             print_help(args[0].clone());
             return Ok(());
-        }
-        _ => return Err(io::Error::new(io::ErrorKind::Unsupported, "wrong mode"))
+        },
+        k => return Err(io::Error::new(io::ErrorKind::Other, format!("wrong mode: {}", k)))
     }
-
-    let (src, dst) = (args[2].clone(), args[3].clone());
 
     // let encoded = encode::get_uri(uml)?;
     // let diagram = fetch::fetch(encoded, fetch::Format::Png).await?;
@@ -47,12 +45,12 @@ async fn main() -> io::Result<()> {
 }
 
 fn print_help(cmd: String) {
-    println!("Usage:");
+    println!("Usage:\n\t{} [mode] [src] [dst]\n", cmd);
 
-    println!("{} --help", cmd);
-    println!("{} -h", cmd);
-    println!("\tPrint this help");
-
-    println!("{} [mode] [src] [dst]", cmd);
-    println!("\t")
+    println!("Modes:");
+    println!("\t-h\t\t–\tprint this help");
+    println!("\t-f\t\t–\tcompile a file");
+    println!("\t-d\t\t–\tcompile all files in a directory");
+    println!("\t-fs\t\t–\tcompile a file each time it is changed");
+    println!("\t-ds\t\t–\tcompile all files in directory each time these files are changed");
 }
